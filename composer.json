@@ -1,0 +1,22 @@
+{
+    "name": "kenjiefx/scriptgum",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kenjiefx\\Scriptgum\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kenjiefx",
+            "email": "terradoflex@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "kenjiefx/scratch-php": "dev-main",
+        "kenjiefx/strawberry-scratch": "dev-main",
+        "kenjiefx/venta-css": "dev-main"
+    }
+}

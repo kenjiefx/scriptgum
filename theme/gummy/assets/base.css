@@ -1,0 +1,4 @@
+* {margin:0;padding:0;box-sizing:border-box;}
+#main {display:none;transition: 0.5s;}
+ul {list-style-type:none;}
+body, input, textarea, button {font-family: 'Inter'; color: #454545;}

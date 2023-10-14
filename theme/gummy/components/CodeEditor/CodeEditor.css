@@ -1,0 +1,35 @@
+#code_editor_wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    overflow: clip;
+}
+
+[xblock="/CodeEditor/EditorPane"] {
+    transition: 0.5s;
+    height: 100%;
+}
+
+[xblock="/CodeEditor/EditorPane/ResizeButton"] {
+    position: absolute;
+    z-index: 1;
+    top: 10;
+    right: 10;
+}
+
+#code_editor { 
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#code_editor .ace_scroller {
+    background-color: rgb(251, 251, 251);
+}
+
+#code_editor.ace_editor {
+    font-family: 'Fira Code'!important;
+}
