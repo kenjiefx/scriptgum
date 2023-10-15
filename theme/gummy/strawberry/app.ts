@@ -30,8 +30,12 @@ type FactoryCallbackFunction<TDependecies extends unknown[]> = (...args: TDepend
 
 export type InjectableDependency = {[key:string]: any} | (()=>void)
 
+export type ParentComponent<TComponent> = {
+    get:()=>TComponent
+}
+
 export type ScopeObject<TScope extends {[key: string]: any}> = TScope 
-export type PatchHelper = (blockName?:string) => void
+export type PatchHelper = (blockName?:string) => Promise<null>
 export type AppInstance = {
     /**
      * Registers a function that executes when the App is ready

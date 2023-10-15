@@ -11,6 +11,10 @@
     height: 100%;
 }
 
+[xblock="/CodeEditor/PreviewPane"] {
+    transition: 0.5s;
+}
+
 [xblock="/CodeEditor/EditorPane/ResizeButton"] {
     position: absolute;
     z-index: 1;

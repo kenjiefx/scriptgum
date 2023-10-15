@@ -40,7 +40,8 @@
 			"error": "#D81B60",
 			"inherit":"inherit",
 			"success":"#009688",
-			"link-hover":"#5e35b1"
+			"link-hover":"#5e35b1",
+			"none":"none"
         },
 		"variants": "auto",
 		"separator": "-"

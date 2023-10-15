@@ -1,0 +1,13 @@
+#preview_pane_wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: clip;
+}
+
+[xblock="/PreviewPane/ResizeButton"] {
+    position: absolute;
+    z-index: 1;
+    top: 10;
+    right: 10;
+}
