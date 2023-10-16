@@ -45,18 +45,18 @@ export type AppInstance = {
 }
 
 /** An element represented by xblock="@name" */
-export type BlockElement = {
-    name: string,
-    each:(element:StrawberryElement)=>void
-}
+export type BlockElement=<TElement>(
+    elementName: string,
+    callbackFunction:(element:StrawberryElement<TElement>)=>unknown
+)=>void
 
 /** An HTML element wrapped inside Strawberry-defined object */
-export type StrawberryElement = {
-    constructor:(element:HTMLElement,treeCount:null)=>void
-    get:()=>HTMLElement
+/** An HTML element wrapped inside Strawberry-defined object */
+export type StrawberryElement<TElement> = {
+    constructor:(element:TElement,treeCount:null)=>void
     addClass:(className:string)=>void
     removeClass:(className:string)=>void
-    $element: HTMLElement
+    $element: TElement
 }
 
 /** 

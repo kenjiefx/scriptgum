@@ -1,0 +1,11 @@
+dialog:modal {
+    position: unset;
+    width: 100%;
+    max-width: unset;
+    max-height: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: #e0defb4f;
+}

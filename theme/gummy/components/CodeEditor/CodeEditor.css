@@ -37,3 +37,12 @@
 #code_editor.ace_editor {
     font-family: 'Fira Code'!important;
 }
+
+.script-title > fieldset {
+    border-color:white !important;
+}
+
+.script-title input {
+    font-weight: bold !important;
+    font-size: 1em !important;
+}

@@ -1,0 +1,30 @@
+fieldset.fieldset__input {
+    border: 1px solid #cacaca;
+    flex-grow: 1;
+}
+
+fieldset.fieldset__input textarea:focus {
+    outline: none;
+}
+
+fieldset.fieldset__input input:focus {
+    outline: none;
+}
+
+fieldset.fieldset__input:focus-within {
+    border: 1px solid #1E88E5;
+}
+
+
+fieldset.fieldset__box-shadow {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.2);
+}
+
+fieldset label {
+    font-size: 0.7em;
+}
+
+.form-input-error {
+    border-color: #D81B60!important;
+}
+

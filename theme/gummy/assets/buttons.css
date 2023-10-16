@@ -1,0 +1,36 @@
+.btn-loadable {
+    position: relative;
+}
+
+.btn-loadable.is-button-loading {
+    color: transparent;
+    background-color: #f3f2f2;
+}
+
+.is-button-loading:after {
+    content: '';
+    display: block;
+    width: 1.1em;
+    height: 1.1em;
+    position: absolute;
+    left: calc(50% - 0.75em);
+    top: calc(50% - 0.72em);
+    border: 0.17em solid #00000012;
+    border-right-color: #878787;
+    border-radius: 50%;
+    animation: button-load-anim 0.5s linear infinite;
+    opacity: 1;
+}
+
+.is-button-loading svg {
+    opacity: 0!important;
+}
+
+@keyframes button-load-anim {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}

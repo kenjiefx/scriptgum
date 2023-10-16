@@ -6,7 +6,10 @@ Kenjiefx\StrawberryScratch\Registry\ComponentsRegistry::register('PreviewPane');
 <template xcomponent="@CodeEditor">
     <div xif="state=='active'" class="width-24">
         <div xblock="/CodeEditor/Header" class="width-24 padding-top-19 display-flex align-items-center">
-            <?php include __dir__.'/Header/UserProfile/ProfileCard.php'; ?>
+            <div class="display-flex align-items-center align-items-center padding-x-22">
+                <?php include __dir__.'/Header/UserProfile/ProfileCard.php'; ?>
+                <?php include __dir__.'/ToolsPane/Title.php'; ?>
+            </div>
             <div class="padding-x-17 display-flex align-items-center flex-grow-1 flex-direction-row-reverse">
                 <?php include __dir__.'/ToolsPane/Tools.php'; ?>
             </div>
@@ -31,5 +34,9 @@ Kenjiefx\StrawberryScratch\Registry\ComponentsRegistry::register('PreviewPane');
     </div>
     <div xif="state=='error'"></div>
 
+    <?php snippet('/Modal/Dialog',[
+        'namespace' => 'Share',
+        'content' => __dir__.'/Modals/Share.php'
+    ]); ?>
     
 </template>
