@@ -27,7 +27,8 @@ app.component<OAuthWrapper>('OAuthWrapper',(
     OAuthSvc: OAuthSvc,
     AjaxSvcHandler: AjaxSvcHandler
 )=>{
-    const oauthHandlerUri = 'https://7ry5682dnf.execute-api.ap-southeast-1.amazonaws.com/test_deploy_stage/oauth'
+    //const oauthHandlerUri = 'https://7ry5682dnf.execute-api.ap-southeast-1.amazonaws.com/test_deploy_stage/oauth'
+    const oauthHandlerUri = 'http://localhost:5454/auth'
     StateManager.setScope($scope).setPatcher($patch).register('active').register('error').register('loading')
     $app.onReady(()=>{
         $parent.get().hooks().loadBar.activate()
@@ -49,8 +50,11 @@ app.component<OAuthWrapper>('OAuthWrapper',(
             }
             AjaxSvcHandler.get({
                 url: oauthHandlerUri+'?provider=google&token='+token
+            }).then((response:{next:'register',token:string,user:{firstName:string,lastName:string,email:string}})=>{
+                if (response.next==='register') {
+                    location.href = `/register?token=${response.token}&firstname=${response.user.firstName}&lastname=${response.user.lastName}&email=${response.user.email}`
+                }
             })
-            console.log(token)
         }
         setTimeout(()=>{
             $parent.get().hooks().loadBar.hide()
