@@ -2,25 +2,33 @@
     <form xblock="Login/Form" onsubmit="blockAutoSubmit(event)" class="width-24">
         <label class="color-label-gray margin-bottom-5 text-1" style="display:block;">Email Address</label>
         <?php snippet('/Form/Input/Text',[
+            'model' => 'email',
             'placeholder' => 'johndoe@example.com'
         ]); ?>
         <div class="margin-top-13"></div>
         <label class="color-label-gray margin-bottom-5 text-1" style="display:block;">Password</label>
         <?php snippet('/Form/Input/Text',[
+            'model' => 'password',
             'placeholder' => '•••••••••••••••••',
             'type' => 'password'
         ]); ?>
+        <div xblock="/Login/Form/Error">
+            <div xif="hasError==true">
+                <div class="margin-top-7 color-error text-1 font-weight-500">{{errorMessage}}</div>
+            </div>
+        </div>
         <div class="margin-top-19"></div>
         <div class="display-flex flex-direction-row-reverse align-items-center">
             <div>
                 <?php snippet('Form/Button',[
+                    'xclick' => 'signinWith.fireAuth()',
                     'text' => 'Login',
                     'class' => 'btn-loadable'
                 ]); ?>
             </div>
             <div class="text-1 font-weight-300 margin-right-6">
                 Don't have an account yet? 
-                <a href="/register.html">
+                <a href="/register">
                     Register Here
                 </a>
             </div>

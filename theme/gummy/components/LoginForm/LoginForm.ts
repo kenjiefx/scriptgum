@@ -1,4 +1,4 @@
-import { PatchHelper, ScopeObject, app } from "../../strawberry/app"
+import { PatchHelper, ScopeObject, StrawberryElement, app } from "../../strawberry/app"
 import { StateManagerInterface } from "../../strawberry/factories/StateManager"
 import { OAuthSvc } from "../../strawberry/services/OAuthSvc"
 
@@ -12,8 +12,13 @@ type ComponentScope = {
         google:{
             viaFirebase:()=>void,
             viaNative:()=>void
-        }
-    }
+        },
+        fireAuth:(button:StrawberryElement<HTMLButtonElement>)=>void
+    },
+    hasError: boolean,
+    errorMessage: string,
+    email: string,
+    password: string
 }
 
 /** Exportables */
@@ -29,42 +34,65 @@ app.component<LoginForm>('LoginForm',(
     OAuthSvc: OAuthSvc
 )=>{
     StateManager.setScope($scope).setPatcher($patch).register('active').register('error').register('loading')
+
+    // Populating data, if wrapper by OAuthWrapper 
+    const url = new URL(location.href)
+    const queryParams = new URLSearchParams(url.search)
+    const hasFireAuth = queryParams.get('fireauth')
+    if (hasFireAuth!==null) {
+        $scope.email = queryParams.get('email') ?? null
+        $scope.password = '•••••••••••••••••'
+    }
+
     $scope.signinWith = {
         google:{
             viaFirebase: ()=>{
-                // @ts-ignore
-                const firebaseAuth = window.FIREBASE.auth
-                // @ts-ignore
-                const signinWithPopup = window.FIREBASE.signInWith.popup
-                // @ts-ignore
-                const provider = window.FIREBASE.providers.google
-                // @ts-ignore 
-                const GoogleAuthProvider = window.FIREBASE.imports.GoogleAuthProvider
-                signinWithPopup(firebaseAuth,provider)
-                .then((result)=>{
-                    // This gives you a Google Access Token. You can use it to access the Google API.
-                    const credential = GoogleAuthProvider.credentialFromResult(result)
-                    const token = credential.accessToken
-                    // The signed-in user info.
-                    const user = result.user
-                    console.log(user)
-                    console.log(token)
-                }).catch((error) => {
-                    // Handle Errors here.
-                    const errorCode    = error.code;
-                    const errorMessage = error.message;
-                    // The email of the user's account used.
-                    const email = error.customData.email;
-                    // The AuthCredential type that was used.
-                    const credential = GoogleAuthProvider.credentialFromError(error);
-                    // ...
-                });
+                
             },
             viaNative:()=>{
                 OAuthSvc.createSession('google')
             }
+        },
+        fireAuth:(button)=>{
+            let email = ($scope.email!==undefined) ? $scope.email.trim() : ''
+            let password = ($scope.password!==undefined) ? $scope.password.trim() : ''
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+            if (email.length<8||email.length>64) {
+                $scope.hasError = true
+                $scope.errorMessage = 'Email must be more than 8 characters'
+                $patch('/Login/Form/Error')
+                return
+            }
+            if (!emailRegex.test(email)) {
+                $scope.hasError = true
+                $scope.errorMessage = 'Email must be valid'
+                $patch('/Login/Form/Error')
+                return
+            }
+            if (password.length<12||password.length>64) {
+                $scope.hasError = true
+                $scope.errorMessage = 'Password must be more than 12 characters'
+                $patch('/Login/Form/Error')
+                return
+            }
+            $scope.hasError = false
+            $scope.errorMessage = ''
+            $patch('/Login/Form/Error')
+            button.addClass('is-button-loading')
+            window['FIREBASE'].signInWith.emailAndPassword(window['FIREBASE'].auth,email,password)
+            .then(async (userCredential)=>{
+                const idToken = userCredential._tokenResponse.idToken
+                OAuthSvc.createSession('fireauth',idToken,email)
+            }).catch((error)=>{
+                $scope.hasError = true
+                $scope.errorMessage = 'Sorry, your credentials are invalid'
+                $patch('/Login/Form/Error')
+                button.removeClass('is-button-loading')
+                return
+            })
         }
     }
+    $scope.hasError = false
     return {
         render:()=>{
             return new Promise((resolve,reject)=>{

@@ -2,6 +2,7 @@ import { AppInstance, ParentComponent, PatchHelper, ScopeObject, app } from "../
 import { StateManagerInterface } from "../../strawberry/factories/StateManager"
 import { AjaxSvcHandler } from "../../strawberry/services/AjaxSvcHandler"
 import { OAuthSvc } from "../../strawberry/services/OAuthSvc"
+import { ServiceDomains } from "../../strawberry/services/ServiceDomains"
 import { RouterLoadbarHooks } from "../Router/Router"
 
 /** States of the component */
@@ -25,10 +26,11 @@ app.component<OAuthWrapper>('OAuthWrapper',(
     $app: AppInstance,
     $parent: ParentComponent<RouterLoadbarHooks>,
     OAuthSvc: OAuthSvc,
-    AjaxSvcHandler: AjaxSvcHandler
+    AjaxSvcHandler: AjaxSvcHandler,
+    ServiceDomains: ServiceDomains
 )=>{
     //const oauthHandlerUri = 'https://7ry5682dnf.execute-api.ap-southeast-1.amazonaws.com/test_deploy_stage/oauth'
-    const oauthHandlerUri = 'http://localhost:5454/auth'
+    const oauthHandlerUri = ServiceDomains.get().functions+'/oauth/scriptgum'
     StateManager.setScope($scope).setPatcher($patch).register('active').register('error').register('loading')
     $app.onReady(()=>{
         $parent.get().hooks().loadBar.activate()
@@ -50,9 +52,40 @@ app.component<OAuthWrapper>('OAuthWrapper',(
             }
             AjaxSvcHandler.get({
                 url: oauthHandlerUri+'?provider=google&token='+token
-            }).then((response:{next:'register',token:string,user:{firstName:string,lastName:string,email:string}})=>{
+            }).then((response:{next:'register',token:string,user:{firstName:string,lastName:string,email:string,username:string}})=>{
                 if (response.next==='register') {
                     location.href = `/register?token=${response.token}&firstname=${response.user.firstName}&lastname=${response.user.lastName}&email=${response.user.email}`
+                    return
+                }
+                if (response.next==='account_page') {
+                    location.href = `/${response.user.username}/create`
+                    return
+                }
+            })
+        }
+        if (provider==='fireauth') {
+            const url = new URL(location.href)
+            const queryParams = new URLSearchParams(url.search)
+            const token = queryParams.get('token')
+            if (token===null) {
+                $parent.get().hooks().loadBar.hide()
+                StateManager.switch('error')
+                return 
+            }
+            AjaxSvcHandler.get({
+                url: oauthHandlerUri+'?provider=firebase&token='+token
+            }).then((response:{next:'register'|'account_page'|'email_verification_page',token:string,user:{firstName:string,lastName:string,email:string,username:string,id:string}})=>{
+                if (response.next==='register') {
+                    $parent.get().hooks().loadBar.hide()
+                    StateManager.switch('error')
+                    return
+                }
+                if (response.next==='account_page') {
+                    location.href = `/${response.user.username}/create`
+                    return
+                }
+                if (response.next==='email_verification_page') {
+                    location.href = 'checkpoint?id='+response.user.id
                 }
             })
         }
