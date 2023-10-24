@@ -72,7 +72,7 @@ app.component<RegisterForm>('RegisterForm',(
             return 
         }
         if (createUserResponse.next==='email_verification_page') {
-            location.href = '/checkpoint?id='+createUserResponse.user.id
+            location.href = '/checkpoint?id='+createUserResponse.user.id+'&token='+$scope.providerToken
             return
         }
     }
@@ -230,7 +230,8 @@ app.component<RegisterForm>('RegisterForm',(
                     last_name: $scope.lastName.trim(),
                     token: $scope.providerToken,
                     provider: 'oauth',
-                    username: $scope.username
+                    username: $scope.username,
+                    api_key: 'AIzaSyDjrT3tdacUfrezcKH3D2lCq41-qvvc5Ro'
                 })
                 .then(response=>handleCreateUserResponse(response))
                 .catch((error)=>{
@@ -241,7 +242,20 @@ app.component<RegisterForm>('RegisterForm',(
             // Sign up with Firebase
             window['FIREBASE'].registerWith.emailAndPassword(window['FIREBASE'].auth,$scope.email,$scope.password)
             .then((userCredential)=>{
-                console.log(userCredential)
+                const idToken = userCredential._tokenResponse.idToken
+                $scope.providerToken = idToken
+                UserRegistryService.createUser({
+                    first_name: $scope.firstName.trim(),
+                    last_name: $scope.lastName.trim(),
+                    token: $scope.providerToken,
+                    provider: 'firebase',
+                    username: $scope.username,
+                    api_key: 'AIzaSyDjrT3tdacUfrezcKH3D2lCq41-qvvc5Ro'
+                })
+                .then(response=>handleCreateUserResponse(response))
+                .catch((error)=>{
+                    console.log(error)
+                })
             }).catch((error)=>{
                 console.log(error)
             })

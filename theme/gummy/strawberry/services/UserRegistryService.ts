@@ -23,7 +23,8 @@ export interface UserRegistryService {
         last_name: string,
         token: string,
         provider: 'firebase'|'oauth',
-        username: string
+        username: string,
+        api_key: string
     })=>Promise<UserCreateResponse>
 }
 

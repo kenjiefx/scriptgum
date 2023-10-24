@@ -89,10 +89,6 @@ app.component<OAuthWrapper>('OAuthWrapper',(
                 }
             })
         }
-        setTimeout(()=>{
-            $parent.get().hooks().loadBar.hide()
-            //StateManager.switch('error')
-        },2000)
     })
     return {
         render:()=>{

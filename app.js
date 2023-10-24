@@ -41,6 +41,10 @@ app.get('/checkpoint',(request,response)=>{
     response.status(200)
     response.sendFile(root+'/dist/verification.html')
 })
+app.get('/confirm/email',(request,response)=>{
+    response.status(200)
+    response.sendFile(root+'/dist/confirm-email.html')
+})
 app.get('/register',(request,response)=>{
     response.status(200)
     response.sendFile(root+'/dist/register.html')
