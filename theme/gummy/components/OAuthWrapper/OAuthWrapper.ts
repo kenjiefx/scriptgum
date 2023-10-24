@@ -74,7 +74,7 @@ app.component<OAuthWrapper>('OAuthWrapper',(
             }
             AjaxSvcHandler.get({
                 url: oauthHandlerUri+'?provider=firebase&token='+token
-            }).then((response:{next:'register'|'account_page'|'email_verification_page',token:string,user:{firstName:string,lastName:string,email:string,username:string,id:string}})=>{
+            }).then((response:{next:'register'|'account_page'|'email_verification_page',token:string,user:{firstName:string,lastName:string,email:string,username:string,id:string,firebaseIdToken:string}})=>{
                 if (response.next==='register') {
                     $parent.get().hooks().loadBar.hide()
                     StateManager.switch('error')
@@ -85,7 +85,7 @@ app.component<OAuthWrapper>('OAuthWrapper',(
                     return
                 }
                 if (response.next==='email_verification_page') {
-                    location.href = 'checkpoint?id='+response.user.id
+                    location.href = 'checkpoint?id='+response.user.id+'&token='+response.user.firebaseIdToken
                 }
             })
         }
