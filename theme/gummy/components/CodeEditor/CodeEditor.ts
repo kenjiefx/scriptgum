@@ -5,7 +5,7 @@ import { HTMLBuilder } from "../../strawberry/services/HTMLBuilder"
 import { IdentityProviderSvc } from "../../strawberry/services/IdentityProviderSvc"
 import { PaneResizeButtonParentHooks } from "../PaneResizeButton/PaneResizeButton"
 import { PreviewPane, PreviewPaneParentHooks } from "../PreviewPane/PreviewPane"
-import { RouterLoadbarHooks } from "../Router/Router"
+import { RouterEventHooks, RouterLoadbarHooks } from "../Router/Router"
 
 /** States of the component */
 export type CodeEditorState = 'loading' | 'active' | 'error'
@@ -40,6 +40,18 @@ export interface CodeEditor {
     render:()=>Promise<void>
 }
 
+type testCombine = RouterLoadbarHooks&RouterEventHooks
+const test:testCombine = {
+    hooks:()=>{
+        return {
+            loadBar: {
+                activate:()=>{return new Promise((resolve,reject)=>resolve())},
+                hide:()=>{}
+            }
+        }
+    }
+}
+
 /** Component declarations */
 app.component<CodeEditor&PaneResizeButtonParentHooks&PreviewPaneParentHooks>('CodeEditor',(
     $scope: ScopeObject<ComponentScope>,
@@ -50,7 +62,7 @@ app.component<CodeEditor&PaneResizeButtonParentHooks&PreviewPaneParentHooks>('Co
     $block:(name:string,callback:(element:StrawberryElement<Element>)=>void)=>void,
     HTMLBuilder: HTMLBuilder,
     IdentityProviderSvc: IdentityProviderSvc,
-    $parent: ParentComponent<RouterLoadbarHooks>
+    $parent: ParentComponent<RouterLoadbarHooks&RouterEventHooks>
 )=>{
     class ModalController {
         private name: string 
@@ -133,23 +145,20 @@ app.component<CodeEditor&PaneResizeButtonParentHooks&PreviewPaneParentHooks>('Co
             })
         }
     }
+    $parent.get().hooks().events.
     $app.onReady(()=>{
         $scope.content = {
             title: '',
             code: ''
         }
         StateManager.switch('loading')
-        IdentityProviderSvc.getUser()
-        .then((user)=>{
-            $scope.user = user
-            StateManager.switch('active').then(()=>{
-                setEditorBodyHeight()
-                // @ts-ignore
-                editor = ace.edit('code_editor')
-                editor.setValue("<!-- Start Coding Here -->\n")
-                editor.session.setMode('ace/mode/html')
-            })
-        })
+        setTimeout(()=>{
+            setEditorBodyHeight()
+            // @ts-ignore
+            editor = ace.edit('code_editor')
+            editor.setValue("<!-- Start Coding Here -->\n")
+            editor.session.setMode('ace/mode/html')
+        },2000)
     })
     return {
         render:()=>{

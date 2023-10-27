@@ -55,6 +55,16 @@
             }
             
         </script> 
+        <script>
+            window['__METAPAGE'] = {
+                user: {
+                    username: 'USERNAME_METAPAGE_PLACEHOLDER'
+                },
+                page: {
+                    type: 'PAGE_METAPAGE_PLACEHOLDER'
+                }
+            }
+        </script>
         <script type="text/javascript">const blockAutoSubmit=e=>e.preventDefault();</script>
         <?php template_assets(); ?>
     </head>

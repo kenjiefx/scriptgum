@@ -1,6 +1,7 @@
 import { AppInstance, ParentComponent, PatchHelper, ScopeObject, app } from "../../strawberry/app"
 import { StateManagerInterface } from "../../strawberry/factories/StateManager"
 import { AjaxSvcHandler } from "../../strawberry/services/AjaxSvcHandler"
+import { AuthSvc } from "../../strawberry/services/AuthSvc"
 import { OAuthSvc } from "../../strawberry/services/OAuthSvc"
 import { ServiceDomains } from "../../strawberry/services/ServiceDomains"
 import { RouterLoadbarHooks } from "../Router/Router"
@@ -27,7 +28,8 @@ app.component<OAuthWrapper>('OAuthWrapper',(
     $parent: ParentComponent<RouterLoadbarHooks>,
     OAuthSvc: OAuthSvc,
     AjaxSvcHandler: AjaxSvcHandler,
-    ServiceDomains: ServiceDomains
+    ServiceDomains: ServiceDomains,
+    AuthSvc: AuthSvc
 )=>{
     //const oauthHandlerUri = 'https://7ry5682dnf.execute-api.ap-southeast-1.amazonaws.com/test_deploy_stage/oauth'
     const oauthHandlerUri = ServiceDomains.get().functions+'/oauth/scriptgum'
@@ -58,6 +60,7 @@ app.component<OAuthWrapper>('OAuthWrapper',(
                     return
                 }
                 if (response.next==='account_page') {
+                    AuthSvc.saveAuthToken(response.token)
                     location.href = `/${response.user.username}/create`
                     return
                 }
@@ -81,6 +84,7 @@ app.component<OAuthWrapper>('OAuthWrapper',(
                     return
                 }
                 if (response.next==='account_page') {
+                    AuthSvc.saveAuthToken(response.token)
                     location.href = `/${response.user.username}/create`
                     return
                 }
